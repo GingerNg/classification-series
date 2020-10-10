@@ -4,15 +4,16 @@
 # @author :lxztju
 # @github : https://github.com/lxztju
 import os
-home = os.path.expanduser('~')
+# home = os.path.expanduser('~')
+home = "/home/ginger/Projects/githubProjs/pytorch_classification"
 ##数据集的类别
-NUM_CLASSES = 206
+NUM_CLASSES = 3
 
 #训练时batch的大小
 BATCH_SIZE = 32
 
 #网络默认输入图像的大小
-INPUT_SIZE = 300
+INPUT_SIZE = 32
 #训练最多的epoch
 MAX_EPOCH = 100
 # 使用gpu的数目
@@ -45,14 +46,14 @@ MODEL_NAMES = {
 }
 
 
-BASE = home + '/data/'
+BASE = home + '/data/flower_3_32/'
 
 
 # 训练好模型的保存位置
 SAVE_FOLDER = BASE + 'weights/'
 
 #数据集的存放位置
-TRAIN_LABEL_DIR =BASE + 'train.txt'     
+TRAIN_LABEL_DIR =BASE + 'train.txt'
 VAL_LABEL_DIR = BASE + 'val.txt'
 TEST_LABEL_DIR = BASE + 'test.txt'
 
