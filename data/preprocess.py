@@ -36,7 +36,8 @@ if __name__ == '__main__':
                 f.write(img + ' ' + str(index))
                 f.write('\n')
 
-    imglist = glob.glob(os.path.join(valdata_path, '*.jpg')) + glob.glob(os.path.join(valdata_path, '*.png'))
+    imglist = glob.glob(os.path.join(valdata_path, '*.jpg')) + \
+        glob.glob(os.path.join(valdata_path, '*.png'))
     with open(txtpath + 'test.txt', 'a')as f:
         for img in imglist:
             f.write(img)

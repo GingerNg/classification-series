@@ -32,25 +32,25 @@ if not cfg.RESUME_EPOCH:
     print('****** loading the Imagenet pretrained weights ****** ')
     if not cfg.model_name.startswith('efficientnet'):
         model = cfg.MODEL_NAMES[cfg.model_name](num_classes=cfg.NUM_CLASSES)  # 初始化模型
-        # 冻结前边一部分层不训练  载入预训练模型，可以选择固定特征提取部分的参数
-        ct = 0
-        for child in model.children():
-            ct += 1
-            # print(child)
-            if ct < 8:
-                print(child)
-                for param in child.parameters():
-                    param.requires_grad = False
+        # # 冻结前边一部分层不训练
+        # ct = 0
+        # for child in model.children():
+        #     ct += 1
+        #     # print(child)
+        #     if ct < 8:
+        #         print(child)
+        #         for param in child.parameters():
+        #             param.requires_grad = False
     else:
         model = cfg.MODEL_NAMES[cfg.model_name](cfg.model_name, num_classes=cfg.NUM_CLASSES)
-        # print(model)
-        c = 0
-        for name, p in model.named_parameters():
-            c += 1
-            # print(name)
-            if c >= 700:
-                break
-            p.requires_grad = False
+        # # print(model)
+        # c = 0
+        # for name, p in model.named_parameters():
+        #     c += 1
+        #     # print(name)
+        #     if c >= 700:
+        #         break
+        #     p.requires_grad = False
 
     # print(model)
 if cfg.RESUME_EPOCH:

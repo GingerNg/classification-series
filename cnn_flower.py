@@ -1,3 +1,4 @@
+import os
 import torch.optim as optim
 import torch.nn.functional as F
 import torch.nn as nn
@@ -35,6 +36,44 @@ learning_rate = 0.001
 # kernel_size (int or tuple): Size of the convolving kernel
 
 
+class SequentialCNNNet(nn.Module):
+    def __init__(self):
+        super(SequentialCNNNet, self).__init__()
+        self.conv1 = nn.Conv2d(3, 64, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(64, 128, 5)
+        self.fc1 = nn.Linear(128 * 5 * 5, 1024)  # 全连接层
+        # self.fc1 = nn.Linear(4096, 1024)
+        self.fc2 = nn.Linear(1024, 84)
+        self.fc3 = nn.Linear(84, 3)
+        self.features = nn.Sequential(
+            self.conv1,
+            nn.ReLU(),
+            self.pool,
+            self.conv2,
+            nn.ReLU(),
+            self.pool
+        )
+        self.classifier = nn.Sequential(
+            self.fc1,
+            self.fc2,
+            self.fc3
+        )
+
+    def forward(self, x):
+        # print(x)  # 不可微
+        x = self.features(x)
+        # print(x.shape)
+        # x = x.mean(3)
+        # x = x
+        x = x.view(-1, 128 * 5 * 5)
+        # x = x.view(-1, 4096)
+        # print(x.shape)
+        x = self.classifier(x)
+        print(x)  # grad_fn=<AddmmBackward>  可微
+        return x
+
+
 class CNNNet(nn.Module):
     def __init__(self):
         super(CNNNet, self).__init__()
@@ -43,7 +82,7 @@ class CNNNet(nn.Module):
         self.conv2 = nn.Conv2d(64, 128, 5)
         self.fc1 = nn.Linear(128 * 5 * 5, 1024)  # 全连接层
         self.fc2 = nn.Linear(1024, 84)
-        self.fc3 = nn.Linear(84, 10)
+        self.fc3 = nn.Linear(84, 3)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -80,11 +119,11 @@ transform = transforms.Compose(
 classes = ('plane', 'car', 'bird')
 # 图片显示
 images, labels = next(iter(trainloader))
-imshow(torchvision.utils.make_grid(images))
+# imshow(torchvision.utils.make_grid(images))
 
 # 定义损失函数和优化器
-cnn_model = CNNNet()
-criterion = nn.CrossEntropyLoss()
+cnn_model = SequentialCNNNet()
+criterion = nn.CrossEntropyLoss()   # (评判或作决定的) 标准
 optimizer = optim.SGD(cnn_model.parameters(), lr=learning_rate, momentum=0.9)
 
 # train-训练模型
@@ -94,9 +133,11 @@ for epoch in range(num_epochs):
     print("Epoch  {}/{}".format(epoch, num_epochs))
     for i, data in enumerate(trainloader, 0):
         inputs, labels = data
+        # optimizer.zero_grad() 意思是把梯度置零，也就是把loss关于weight的导数变成0.
         optimizer.zero_grad()
         outputs = cnn_model(inputs)
         loss = criterion(outputs, labels)
+        # loss.requires_grad = True  # 不能有
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
@@ -105,7 +146,8 @@ for epoch in range(num_epochs):
     print("Loss is :{:.4f},Train Accuracy is:{:.4f}%".format(
         running_loss / len(trainset), 100 * running_correct / len(trainset)))
 
-model_path = '/home/ginger/Projects/githubProjs/pytorch_classification/data/flower_3_32/cnn_model.pt'
+cur_path = os.path.dirname(os.path.abspath(__file__))
+model_path = cur_path + '/data/flower_3/cnn_model.pt'
 # 保存训练好的模型
 torch.save(cnn_model, model_path)
 

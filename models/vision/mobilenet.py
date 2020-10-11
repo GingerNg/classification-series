@@ -33,6 +33,7 @@ class InvertedResidual(nn.Module):
         if expand_ratio != 1:
             # pw
             layers.append(ConvBNReLU(inp, hidden_dim, kernel_size=1))
+
         layers.extend([
             # dw
             ConvBNReLU(hidden_dim, hidden_dim, stride=stride, groups=hidden_dim),
@@ -52,7 +53,7 @@ class InvertedResidual(nn.Module):
 class MobileNetV2(nn.Module):
     def __init__(self, num_classes=1000, width_mult=1.0):
         super(MobileNetV2, self).__init__()
-        block = InvertedResidual
+        Block = InvertedResidual
         input_channel = 32
         last_channel = 1280
         inverted_residual_setting = [
@@ -75,7 +76,7 @@ class MobileNetV2(nn.Module):
             output_channel = int(c * width_mult)
             for i in range(n):
                 stride = s if i == 0 else 1
-                features.append(block(input_channel, output_channel, stride, expand_ratio=t))
+                features.append(Block(input_channel, output_channel, stride, expand_ratio=t))
                 input_channel = output_channel
         # building last several layers
         features.append(ConvBNReLU(input_channel, self.last_channel, kernel_size=1))
@@ -102,9 +103,13 @@ class MobileNetV2(nn.Module):
                 nn.init.zeros_(m.bias)
 
     def forward(self, x):
+        # print(x.shape)
         x = self.features(x)
+        # print(x.shape)
         x = x.mean([2, 3])
+        # print(x)
         x = self.classifier(x)
+        # x.requires_grad = True
         return x
 
 
