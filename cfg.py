@@ -9,7 +9,7 @@ import os
 # home = os.path.expanduser('~')
 home = os.path.dirname(os.path.abspath(__file__))
 # 数据集的类别
-NUM_CLASSES = 3
+NUM_CLASSES = 50
 
 # 训练时batch的大小
 BATCH_SIZE = 32
@@ -53,7 +53,8 @@ MODEL_NAMES = {
 }
 
 
-BASE = home + '/data/flower_3/'
+# BASE = home + '/data/flower_3/'
+BASE = home + "/data/flower_50datasets/"
 
 
 # 训练好模型的保存位置

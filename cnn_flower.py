@@ -15,7 +15,7 @@ trainloader = train_dataloader
 testloader = val_dataloader
 
 # 参数设置
-num_epochs = 10
+num_epochs = 1
 batch_size = 64
 learning_rate = 0.001
 
@@ -25,10 +25,6 @@ def get_variable(x):
     return x.cuda() if torch.cuda.is_available() else x
 
 
-# 参数设置
-num_epochs = 15
-batch_size = 64
-learning_rate = 0.001
 # 构建CNN模型
 
 # in_channels (int): Number of channels in the input image
@@ -45,7 +41,7 @@ class SequentialCNNNet(nn.Module):
         self.fc1 = nn.Linear(128 * 5 * 5, 1024)  # 全连接层
         # self.fc1 = nn.Linear(4096, 1024)
         self.fc2 = nn.Linear(1024, 84)
-        self.fc3 = nn.Linear(84, 3)
+        self.fc3 = nn.Linear(84, 50)
         self.features = nn.Sequential(
             self.conv1,
             nn.ReLU(),
@@ -64,13 +60,12 @@ class SequentialCNNNet(nn.Module):
         # print(x)  # 不可微
         x = self.features(x)
         # print(x.shape)
-        # x = x.mean(3)
         # x = x
         x = x.view(-1, 128 * 5 * 5)
         # x = x.view(-1, 4096)
         # print(x.shape)
         x = self.classifier(x)
-        print(x)  # grad_fn=<AddmmBackward>  可微
+        # print(x)  # grad_fn=<AddmmBackward>  可微
         return x
 
 
@@ -82,7 +77,7 @@ class CNNNet(nn.Module):
         self.conv2 = nn.Conv2d(64, 128, 5)
         self.fc1 = nn.Linear(128 * 5 * 5, 1024)  # 全连接层
         self.fc2 = nn.Linear(1024, 84)
-        self.fc3 = nn.Linear(84, 3)
+        self.fc3 = nn.Linear(84, 50)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -116,7 +111,10 @@ transform = transforms.Compose(
 # testloader = torch.utils.data.DataLoader(
 #     testset, batch_size=batch_size, shuffle=False, num_workers=0)
 # 图片类别
-classes = ('plane', 'car', 'bird')
+import cfg
+traindata_path = cfg.BASE + 'train'
+classes = tuple(os.listdir(traindata_path))
+# classes = ('plane', 'car', 'bird')
 # 图片显示
 images, labels = next(iter(trainloader))
 # imshow(torchvision.utils.make_grid(images))
@@ -168,8 +166,8 @@ with torch.no_grad():   # 为了使下面的计算图不占用内存
     print("Test Average accuracy is:{:.4f}%".format(100 * correct / total))
 
 # 求出每个类别的准确率
-class_correct = list(0. for i in range(10))
-class_total = list(0. for i in range(10))
+class_correct = list(0. for i in range(len(classes)))
+class_total = list(0. for i in range(len(classes)))
 with torch.no_grad():
     for data in testloader:
         images, labels = data
@@ -184,5 +182,4 @@ with torch.no_grad():
         except IndexError:
             continue
 for i in range(len(classes)):
-    print('Accuracy of %5s : %4f %%' %
-          (classes[i], 100 * class_correct[i] / class_total[i]))
+    print('Accuracy of %5s : %4f %%' % (classes[i], 100 * class_correct[i] / class_total[i]))
