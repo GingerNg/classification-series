@@ -4,3 +4,5 @@
 *.pt
 *.txt
 *.pth
+Digraph.gv.pdf
+Digraph.gv

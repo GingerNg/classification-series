@@ -4,7 +4,8 @@
 # @author :lxztju
 # @github : https://github.com/lxztju
 from models import Resnet50, Resnet101, Resnext101_32x8d, Resnext101_32x16d, Densenet121, Densenet169, Mobilenetv2, \
-    Efficientnet, Resnext101_32x32d, Resnext101_32x48d, Inception3
+    Efficientnet, Resnext101_32x32d, Resnext101_32x48d, Inception3, LeNet
+
 import os
 # home = os.path.expanduser('~')
 home = os.path.dirname(os.path.abspath(__file__))
@@ -23,7 +24,7 @@ GPUS = 2
 # 从第几个epoch开始resume训练，如果为0，从头开始
 RESUME_EPOCH = 0
 
-WEIGHT_DECAY = 5e-4
+WEIGHT_DECAY = 5e-4  # L2正则化的目的就是为了让权重衰减到更小的值，在一定程度上减少模型过拟合的问题，所以权重衰减也叫L2正则化。
 MOMENTUM = 0.9
 # 初始学习率
 LR = 1e-3
@@ -34,7 +35,7 @@ LR = 1e-3
 # model_name = 'resnet50'
 # model_name = "efficientnet-b7"
 
-model_name = 'moblienetv2'
+model_name = 'lenet5'
 
 MODEL_NAMES = {
     'resnext101_32x8d': Resnext101_32x8d,
@@ -48,6 +49,7 @@ MODEL_NAMES = {
     'moblienetv2': Mobilenetv2,
     'efficientnet-b7': Efficientnet,
     'efficientnet-b8': Efficientnet,
+    "lenet5": LeNet,
 
     # 'inception_3': Inception3
 }

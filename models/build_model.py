@@ -13,7 +13,7 @@ from models import resnext101_32x8d_wsl, resnext101_32x16d_wsl, resnext101_32x32
 from models import EfficientNet
 from models import LOCAL_PRETRAINED, model_urls
 from models import inception_v3
-
+from models.cnn_flower import SequentialCNNNet
 # def Inception3(num_classes, test=False):
 #     model = inception_v3()
 #     # if not test:
@@ -25,6 +25,19 @@ from models import inception_v3
 #     fc_features = model.fc.in_features
 #     model.fc = nn.Linear(fc_features, num_classes)
 #     return model
+
+
+def LeNet(num_classes, test=False):
+    model = SequentialCNNNet()
+    # if not test:
+    #     if LOCAL_PRETRAINED['resnet50'] is None:
+    #         state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)
+    #     else:
+    #         state_dict = torch.load(LOCAL_PRETRAINED['resnet50'])
+    #     # model.load_state_dict(state_dict)
+    fc_features = model.fc.in_features
+    model.fc = nn.Linear(fc_features, num_classes)
+    return model
 
 
 def Resnet50(num_classes, test=False):
@@ -149,7 +162,7 @@ def Densenet121(num_classes, test=False):
 def Densenet169(num_classes, test=False):
     model = densenet169()
     if not test:
-        if LOCAL_PRETRAINED['densenet169'] == None:
+        if LOCAL_PRETRAINED['densenet169'] is None:
             state_dict = load_state_dict_from_url(
                 model_urls['densenet169'], progress=True)
         else:

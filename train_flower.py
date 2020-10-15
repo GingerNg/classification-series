@@ -10,9 +10,12 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from data import train_dataloader, train_datasets
+from data import train_dataloader, train_datasets, val_dataloader
 import cfg
 from utils import adjust_learning_rate_cosine, adjust_learning_rate_step
+
+
+testloader = val_dataloader
 
 # 创建训练模型参数保存的文件夹
 save_folder = cfg.SAVE_FOLDER + cfg.model_name
@@ -88,7 +91,7 @@ batch_size = cfg.BATCH_SIZE
 
 # 每一个epoch含有多少个batch
 max_batch = len(train_datasets)//batch_size
-epoch_size = len(train_datasets) // batch_size
+epoch_size = len(train_datasets) // batch_size   # 每个epoch的迭代次数
 # 训练max_epoch个epoch
 max_iter = cfg.MAX_EPOCH * epoch_size
 
@@ -105,7 +108,9 @@ global_step = 0
 stepvalues = (10 * epoch_size, 20 * epoch_size, 30 * epoch_size)
 step_index = 0
 
-model.train()
+print("max_iter = cfg.MAX_EPOCH", cfg.MAX_EPOCH)
+
+model.train()  # 启用 BatchNormalization 和 Dropout
 for iteration in range(start_iter, max_iter):
     global_step += 1
 
@@ -134,6 +139,7 @@ for iteration in range(start_iter, max_iter):
 
     if iteration in stepvalues:
         step_index += 1
+    # 学习率
     lr = adjust_learning_rate_step(optimizer, cfg.LR, 0.1, epoch, step_index, iteration, epoch_size)
 
     # 调整学习率
@@ -171,3 +177,47 @@ for iteration in range(start_iter, max_iter):
     if iteration % 10 == 0:
         print('Epoch:' + repr(epoch) + ' || epochiter: ' + repr(iteration % epoch_size) + '/' + repr(epoch_size)
               + '|| Totel iter ' + repr(iteration) + ' || Loss: %.6f||' % (loss.item()) + 'ACC: %.3f ||' % (train_acc * 100) + 'LR: %.8f' % (lr))
+
+
+# save model
+cur_path = os.path.dirname(os.path.abspath(__file__))
+model_path = cur_path + '/data/flower_50datasets/%s.pt' % cfg.model_name
+# 保存训练好的模型
+torch.save(model, model_path)
+
+# test
+# 加载训练好的模型
+cnn_model = torch.load(model_path)
+cnn_model.eval()  # 不启用 BatchNormalization 和 Dropout
+# 使用测试集对模型进行评估
+correct = 0.0
+total = 0.0
+with torch.no_grad():   # 为了使下面的计算图不占用内存
+    for data in testloader:
+        images, labels = data
+        outputs = cnn_model(images)
+        _, predicted = torch.max(outputs.data, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+    print("Test Average accuracy is:{:.4f}%".format(100 * correct / total))
+
+# 求出每个类别的准确率
+traindata_path = cfg.BASE + 'train'
+classes = tuple(os.listdir(traindata_path))
+class_correct = list(0. for i in range(len(classes)))
+class_total = list(0. for i in range(len(classes)))
+with torch.no_grad():
+    for data in testloader:
+        images, labels = data
+        outputs = cnn_model(images)
+        _, predicted = torch.max(outputs, 1)
+        c = (predicted == labels).squeeze()
+        try:
+            for i in range(batch_size):
+                label = labels[i]
+                class_correct[label] += c[i].item()
+                class_total[label] += 1
+        except IndexError:
+            continue
+for i in range(len(classes)):
+    print('Accuracy of %5s : %4f %%' % (classes[i], 100 * class_correct[i] / class_total[i]))
