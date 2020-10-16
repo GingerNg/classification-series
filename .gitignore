@@ -1,8 +1,8 @@
 *.pyc
 *.jpg
 *.png
-*.pt
 *.txt
 *.pth
 Digraph.gv.pdf
 Digraph.gv
+nohup.out
