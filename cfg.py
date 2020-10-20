@@ -4,7 +4,7 @@
 # @author :lxztju
 # @github : https://github.com/lxztju
 from models import Resnet50, Resnet101, Resnext101_32x8d, Resnext101_32x16d, Densenet121, Densenet169, Mobilenetv2, \
-    Efficientnet, Resnext101_32x32d, Resnext101_32x48d, Inception3, LeNet
+    Efficientnet, Resnext101_32x32d, Resnext101_32x48d, Inception3, LeNet, AlexNet
 
 import os
 # home = os.path.expanduser('~')
@@ -36,7 +36,8 @@ LR = 1e-3
 # model_name = "efficientnet-b7"
 
 # model_name = 'lenet5'
-model_name = 'resnet50'
+# model_name = 'resnet50'
+model_name = "alexnet"
 # model_name = "moblienetv2"
 
 MODEL_NAMES = {
@@ -52,6 +53,7 @@ MODEL_NAMES = {
     'efficientnet-b7': Efficientnet,
     'efficientnet-b8': Efficientnet,
     "lenet5": LeNet,
+    "alexnet": AlexNet
 
     # 'inception_3': Inception3
 }

@@ -14,6 +14,8 @@ from models import EfficientNet
 from models import LOCAL_PRETRAINED, model_urls
 from models import inception_v3
 from models.cnn_flower import SequentialCNNNet
+from models.vision.alexnet import alexnet
+from utils.model_utils import load_checkpoint
 # def Inception3(num_classes, test=False):
 #     model = inception_v3()
 #     # if not test:
@@ -26,17 +28,30 @@ from models.cnn_flower import SequentialCNNNet
 #     model.fc = nn.Linear(fc_features, num_classes)
 #     return model
 
+
 def AlexNet(num_classes, test=False):
-    model = SequentialCNNNet()
-    # if not test:
-    #     if LOCAL_PRETRAINED['resnet50'] is None:
-    #         state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)
-    #     else:
-    #         state_dict = torch.load(LOCAL_PRETRAINED['resnet50'])
-    #     # model.load_state_dict(state_dict)
+    model = alexnet()
+    if not test:
+        if LOCAL_PRETRAINED['alexnet'] is None:
+            state_dict = load_state_dict_from_url(
+                model_urls['alexnet'], progress=True)
+        else:
+            print(LOCAL_PRETRAINED['alexnet'])
+            state_dict = torch.load(LOCAL_PRETRAINED['alexnet'])
+        print(state_dict.keys())
+        pretrained_dict = {}
+        for k, v in state_dict.items():
+            if k == "classifier.6.weight":
+                pretrained_dict["fc.weight"] = v
+            elif k == "classifier.6.bias":
+                pretrained_dict["fc.bias"] = v
+            pretrained_dict[k] = v
+        model.load_state_dict(pretrained_dict)
     fc_features = model.fc.in_features
+    # model.classifier.
     model.fc = nn.Linear(fc_features, num_classes)
     return model
+
 
 def LeNet(num_classes, test=False):
     model = SequentialCNNNet()
@@ -55,7 +70,9 @@ def Resnet50(num_classes, test=False):
     model = resnet50()
     if not test:
         if LOCAL_PRETRAINED['resnet50'] is None:
-            state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)  # 网络->磁盘->内存
+            # 网络->磁盘->内存
+            state_dict = load_state_dict_from_url(
+                model_urls['resnet50'], progress=True)
         else:
             state_dict = torch.load(LOCAL_PRETRAINED['resnet50'])
         model.load_state_dict(state_dict)
@@ -206,7 +223,8 @@ def Mobilenetv2(num_classes, test=False):
     model = mobilenet_v2()
     if not test:
         if LOCAL_PRETRAINED['moblienetv2'] is None:
-            state_dict = load_state_dict_from_url(model_urls['moblienetv2'], progress=True)
+            state_dict = load_state_dict_from_url(
+                model_urls['moblienetv2'], progress=True)
         else:
             state_dict = torch.load(LOCAL_PRETRAINED['moblienetv2'])
         model.load_state_dict(state_dict)

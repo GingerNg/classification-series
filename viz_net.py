@@ -9,7 +9,7 @@ from torchvision.models import AlexNet
 model = cfg.MODEL_NAMES[cfg.model_name](num_classes=cfg.NUM_CLASSES)
 
 # model = CNNNet()
-x = torch.randn(1, 3, 32, 32).requires_grad_(True)
+x = torch.randn(64, 3, 32, 32).requires_grad_(True)
 y = model(x)
 vis_graph = make_dot(y, params=dict(list(model.named_parameters()) + [('x', x)]))
 vis_graph.view()

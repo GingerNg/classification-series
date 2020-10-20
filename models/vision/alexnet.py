@@ -29,6 +29,7 @@ class AlexNet(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
         )
+        self.fc = nn.Linear(4096, num_classes)
         self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
         self.classifier = nn.Sequential(
             nn.Dropout(),
@@ -37,11 +38,13 @@ class AlexNet(nn.Module):
             nn.Dropout(),
             nn.Linear(4096, 4096),
             nn.ReLU(inplace=True),
-            nn.Linear(4096, num_classes),
+            # nn.Linear(4096, num_classes),
+            self.fc
         )
 
     def forward(self, x):
         x = self.features(x)
+        # print(x)
         x = self.avgpool(x)
         x = x.view(x.size(0), 256 * 6 * 6)
         x = self.classifier(x)
