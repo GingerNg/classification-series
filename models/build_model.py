@@ -42,12 +42,12 @@ def LeNet(num_classes, test=False):
 
 def Resnet50(num_classes, test=False):
     model = resnet50()
-    # if not test:
-    #     if LOCAL_PRETRAINED['resnet50'] is None:
-    #         state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)
-    #     else:
-    #         state_dict = torch.load(LOCAL_PRETRAINED['resnet50'])
-    #     # model.load_state_dict(state_dict)
+    if not test:
+        if LOCAL_PRETRAINED['resnet50'] is None:
+            state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)
+        else:
+            state_dict = torch.load(LOCAL_PRETRAINED['resnet50'])
+        model.load_state_dict(state_dict)
     fc_features = model.fc.in_features
     model.fc = nn.Linear(fc_features, num_classes)
     return model

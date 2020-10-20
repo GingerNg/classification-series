@@ -16,9 +16,9 @@ NUM_CLASSES = 50
 BATCH_SIZE = 32
 
 # 网络默认输入图像的大小
-INPUT_SIZE = 32
+INPUT_SIZE = 128
 # 训练最多的epoch
-MAX_EPOCH = 100
+MAX_EPOCH = 20
 # 使用gpu的数目
 GPUS = 2
 # 从第几个epoch开始resume训练，如果为0，从头开始
@@ -32,10 +32,12 @@ LR = 1e-3
 
 # 采用的模型名称
 # model_name = 'resnext101_32x32d'
-# model_name = 'resnet50'
+
 # model_name = "efficientnet-b7"
 
-model_name = 'lenet5'
+# model_name = 'lenet5'
+model_name = 'resnet50'
+# model_name = "moblienetv2"
 
 MODEL_NAMES = {
     'resnext101_32x8d': Resnext101_32x8d,

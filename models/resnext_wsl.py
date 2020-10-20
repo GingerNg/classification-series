@@ -15,6 +15,7 @@ model_urls = {
     'resnext101_32x16d': 'https://download.pytorch.org/models/ig_resnext101_32x16-c6f796b0.pth',
     'resnext101_32x32d': 'https://download.pytorch.org/models/ig_resnext101_32x32-e4b90b00.pth',
     'resnext101_32x48d': 'https://download.pytorch.org/models/ig_resnext101_32x48-3e41cc8a.pth',
+    'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
 }
 
 

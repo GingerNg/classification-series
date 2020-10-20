@@ -1,5 +1,6 @@
 import os
-home = os.path.expanduser('~')
+# home = os.path.expanduser('~')
+home = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ## 预训练模型的存放位置
 LOCAL_PRETRAINED = {
     'resnext101_32x8d': home + '/weights/resnext101_32x8.pth',
@@ -7,7 +8,8 @@ LOCAL_PRETRAINED = {
     'resnext101_32x48d': home + '/weights/resnext101_32x48.pth',
     # 'resnext101_32x32d': home + '/weights/resnext101_32x32.pth',
     'resnext101_32x32d': None,
-    'resnet50': home +'/weights/resnet50.pth',
+    'resnet50': None,
+    # 'resnet50': home +'/weights/resnet50.pth',
     'resnet101': home +'/weights/resnet101.pth',
     'densenet121': home +'/weights/densenet121.pth',
     'densenet169': home +'/weights/densenet169.pth',

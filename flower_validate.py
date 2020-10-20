@@ -6,7 +6,8 @@ from utils import adjust_learning_rate_cosine, adjust_learning_rate_step
 from evaluation_index import f1, acc
 
 
-testloader = val_dataloader
+# testloader = val_dataloader
+testloader = train_dataloader
 batch_size = cfg.BATCH_SIZE
 
 
