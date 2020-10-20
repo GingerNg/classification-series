@@ -209,6 +209,8 @@ class_total = list(0. for i in range(len(classes)))
 with torch.no_grad():
     for data in testloader:
         images, labels = data
+        if torch.cuda.is_available():
+            images, labels = images.cuda(), labels.cuda()
         outputs = cnn_model(images)
         _, predicted = torch.max(outputs, 1)
         c = (predicted == labels).squeeze()

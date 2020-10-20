@@ -26,6 +26,17 @@ from models.cnn_flower import SequentialCNNNet
 #     model.fc = nn.Linear(fc_features, num_classes)
 #     return model
 
+def AlexNet(num_classes, test=False):
+    model = SequentialCNNNet()
+    # if not test:
+    #     if LOCAL_PRETRAINED['resnet50'] is None:
+    #         state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)
+    #     else:
+    #         state_dict = torch.load(LOCAL_PRETRAINED['resnet50'])
+    #     # model.load_state_dict(state_dict)
+    fc_features = model.fc.in_features
+    model.fc = nn.Linear(fc_features, num_classes)
+    return model
 
 def LeNet(num_classes, test=False):
     model = SequentialCNNNet()
@@ -44,7 +55,7 @@ def Resnet50(num_classes, test=False):
     model = resnet50()
     if not test:
         if LOCAL_PRETRAINED['resnet50'] is None:
-            state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)
+            state_dict = load_state_dict_from_url(model_urls['resnet50'], progress=True)  # 网络->磁盘->内存
         else:
             state_dict = torch.load(LOCAL_PRETRAINED['resnet50'])
         model.load_state_dict(state_dict)
@@ -192,16 +203,16 @@ def Densenet169(num_classes, test=False):
 
 
 def Mobilenetv2(num_classes, test=False):
-    model = mobilenet_v2(num_classes=num_classes)
-    # if not test:
-    #     if LOCAL_PRETRAINED['moblienetv2'] is None:
-    #         state_dict = load_state_dict_from_url(model_urls['moblienetv2'], progress=True)
-    #     else:
-    #         state_dict = state_dict = torch.load(LOCAL_PRETRAINED['moblienetv2'])
-    #     model.load_state_dict(state_dict)
-    # print("mobilenet_v2", model.state_dict().keys())
-    # fc_features = model.classifier[1].in_features
-    # model.classifier = nn.Linear(fc_features, num_classes)
+    model = mobilenet_v2()
+    if not test:
+        if LOCAL_PRETRAINED['moblienetv2'] is None:
+            state_dict = load_state_dict_from_url(model_urls['moblienetv2'], progress=True)
+        else:
+            state_dict = torch.load(LOCAL_PRETRAINED['moblienetv2'])
+        model.load_state_dict(state_dict)
+    print("mobilenet_v2", model.state_dict().keys())
+    fc_features = model.classifier[1].in_features
+    model.classifier = nn.Linear(fc_features, num_classes)
     return model
 
 
