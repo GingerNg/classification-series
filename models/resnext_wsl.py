@@ -17,6 +17,7 @@ model_urls = {
     'resnext101_32x48d': 'https://download.pytorch.org/models/ig_resnext101_32x48-3e41cc8a.pth',
     'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
     'alexnet': 'https://download.pytorch.org/models/alexnet-owt-4df8aa71.pth',
+    'moblienetv2': 'https://download.pytorch.org/models/mobilenet_v2-b0353104.pth',
 }
 
 
