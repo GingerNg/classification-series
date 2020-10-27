@@ -68,6 +68,7 @@ class SelfCustomDataset(Dataset):
 # 设置多线程，来相对提升数据提取的速度
 train_label_dir = cfg.TRAIN_LABEL_DIR
 train_datasets = SelfCustomDataset(train_label_dir, imageset='train')
+
 train_dataloader = torch.utils.data.DataLoader(
     train_datasets, batch_size=batch_size, shuffle=True, num_workers=2)
 
