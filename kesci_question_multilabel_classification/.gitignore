@@ -1,0 +1,10 @@
+*.pyc
+*.pyc
+*/__pycache__/*
+*.pyc
+*.csv
+*.pyc
+*.bin
+*.pl
+data/emb/bert-mini/vocab.txt
+*.pth
